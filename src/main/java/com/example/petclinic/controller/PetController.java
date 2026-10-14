@@ -8,6 +8,7 @@ import com.example.petclinic.service.PetService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -24,8 +25,18 @@ public class PetController {
         }
 
         @GetMapping
-        public List<PetDto> list() {
-                return petService.findPets().stream()
+        public List<PetDto> list(
+                        @RequestParam(value = "year", defaultValue = "") String year,
+                        @RequestParam(value = "type", defaultValue = "") String type) {
+                List<Pet> pets;
+                if (year.isEmpty() && type.isEmpty()) {
+                        pets = petService.findPets();
+                } else if (year.isEmpty() || type.isEmpty()) {
+                        throw new IllegalArgumentException("year or type parameter is required.");
+                } else {
+                        pets = petService.findPetsByYearAndType(Long.parseLong(year), type);
+                }
+                return pets.stream()
                                 .map(p -> {
                                         PetTypeDto petType = new PetTypeDto(
                                                         p.getType().getId(),
