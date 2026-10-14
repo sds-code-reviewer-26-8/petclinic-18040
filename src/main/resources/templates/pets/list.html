@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('반려동물')}"></head>
+<body>
+<header th:replace="~{fragments/layout :: header(${active})}"></header>
+<main class="container">
+  <div class="page-head">
+    <h1>반려동물</h1>
+    <p>생후 n년 미만의 친구들을 찾아 예방접종 대상을 정해 보세요. (오늘 기준)</p>
+  </div>
+
+  <form class="filter" th:action="@{/pets}" method="get" role="search" novalidate data-guard="pet-filter">
+    <div class="filter__field">
+      <label class="filter__label" for="year">나이</label>
+      <span class="filter__inline">
+        <input class="input input--narrow" id="year" type="number" name="year" min="1" step="1"
+               th:value="${year.isEmpty() ? '3' : year}" aria-describedby="year-error">
+        <span class="muted">년 미만</span>
+      </span>
+      <p class="field-error" id="year-error" data-error-for="year" role="alert" hidden></p>
+    </div>
+    <div class="filter__field filter__field--grow">
+      <label class="filter__label" for="type">종류</label>
+      <select class="input" id="type" name="type" aria-describedby="type-error">
+        <option value="">종류 선택</option>
+        <option th:each="t : ${petTypes}" th:value="${t.name}"
+                th:selected="${t.name.equalsIgnoreCase(type)}"
+                th:text="${@viewHelper.emoji(t.name) + ' ' + @viewHelper.typeKo(t.name)}">🐱 고양이</option>
+      </select>
+      <p class="field-error" id="type-error" data-error-for="type" role="alert" hidden></p>
+    </div>
+    <div class="filter__actions">
+      <button class="btn" type="submit">예방접종 대상 조회</button>
+      <a class="btn btn--ghost" th:href="@{/pets}" th:if="${filtered || notice != null}">초기화</a>
+    </div>
+  </form>
+
+  <!-- 주소창에 직접 입력한 잘못된 조건에 대한 안내 (폼에서는 전송 전에 막힘) -->
+  <div class="notice" th:if="${notice != null}" role="alert">
+    <span th:text="${'💡 ' + notice}">안내</span>
+    <span class="muted">나이와 종류를 모두 입력하면 예방접종 대상을 조회해요.</span>
+  </div>
+
+  <div class="api-hint">
+    <span class="chip chip--sky">GET</span>
+    <code th:text="${filtered} ? '/api/v1/pets?year=' + ${year} + '&type=' + ${type} : '/api/v1/pets'">/api/v1/pets</code>
+    <a th:href="${filtered} ? @{/api/v1/pets(year=${year},type=${type})} : @{/api/v1/pets}"
+       target="_blank" rel="noopener">JSON 보기 ↗</a>
+  </div>
+
+  <h2 class="result-title">
+    <span th:if="${!filtered}" th:text="${'전체 반려동물 ' + pets.size() + '마리'}">전체 반려동물 13마리</span>
+    <span th:if="${filtered}"
+          th:text="${'생후 ' + year + '년 미만 ' + @viewHelper.typeKo(type) + ' ' + pets.size() + '마리'}">생후 4년 미만 고양이 3마리</span>
+    <span class="chip chip--warm" th:if="${filtered && !pets.isEmpty()}">💉 예방접종 대상</span>
+  </h2>
+
+  <div class="grid" th:if="${!pets.isEmpty()}">
+    <th:block th:each="p : ${pets}"><a th:replace="~{fragments/cards :: pet(${p}, true)}"></a></th:block>
+  </div>
+  <div class="empty" th:if="${pets.isEmpty()}">
+    <span class="empty__icon">🧺</span>조건에 맞는 반려동물이 없어요. <br>API도 이 경우 빈 배열(<code>[]</code>)을 돌려줘요.
+  </div>
+</main>
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+</body>
+</html>

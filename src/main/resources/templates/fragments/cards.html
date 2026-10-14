@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<body>
+<!-- 보호자 카드 -->
+<a class="card" th:fragment="owner(o)" th:href="@{/owners/{id}(id=${o.id})}">
+  <div class="card__head">
+    <div class="avatar avatar--initial" th:text="${@viewHelper.initial(o.firstName)}">G</div>
+    <div>
+      <div class="card__title" th:text="${o.firstName + ' ' + o.lastName}">George Franklin</div>
+      <div class="card__sub" th:text="${o.city}">Madison</div>
+    </div>
+  </div>
+  <div class="card__row">📍 <b th:text="${o.address}">주소</b></div>
+  <div class="card__row">📞 <b th:text="${@viewHelper.phone(o.telephone)}">전화번호</b></div>
+</a>
+
+<!-- 반려동물 카드 (showOwner: 보호자 표시 여부) -->
+<a class="card" th:fragment="pet(p, showOwner)" th:href="@{/pets/{id}(id=${p.id})}">
+  <div class="card__head">
+    <div class="avatar" th:text="${@viewHelper.emoji(p.type.name)}">🐾</div>
+    <div>
+      <div class="card__title" th:text="${p.name}">Leo</div>
+      <div class="card__sub" th:text="${@viewHelper.typeKo(p.type.name) + ' · ' + @viewHelper.age(p.birthDate)}">고양이 · 3살</div>
+    </div>
+  </div>
+  <div class="card__row">🎂 <b th:text="${#temporals.format(p.birthDate, 'yyyy.MM.dd')}">2020.01.01</b></div>
+  <div class="card__row" th:if="${showOwner}">🏠 <b th:text="${p.owner.firstName + ' ' + p.owner.lastName}">보호자</b></div>
+</a>
+
+<!-- 진료 기록 카드 -->
+<a class="card" th:fragment="visit(v)" th:href="@{/pets/{id}(id=${v.pet.id})}">
+  <div class="visit__date" th:text="${#temporals.format(v.date, 'yyyy.MM.dd')}">2024.01.01</div>
+  <div class="visit__desc" th:text="${v.description}">진료 내용</div>
+  <div class="card__row">
+    <span class="chip chip--warm" th:text="${@viewHelper.emoji(v.pet.type.name) + ' ' + v.pet.name}">🐱 Leo</span>
+    <span class="muted" th:text="${v.pet.owner.firstName + ' ' + v.pet.owner.lastName + ' 님'}">보호자 님</span>
+  </div>
+</a>
+</body>
+</html>

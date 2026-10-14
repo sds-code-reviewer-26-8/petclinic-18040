@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('수의사')}"></head>
+<body>
+<header th:replace="~{fragments/layout :: header(${active})}"></header>
+<main class="container">
+  <div class="page-head">
+    <h1>수의사</h1>
+    <p>믿음직한 우리 병원 의료진</p>
+  </div>
+  <div class="grid">
+    <div class="card" th:each="v, s : ${vets}">
+      <div class="card__head">
+        <div class="avatar" th:classappend="${s.index % 3 == 1} ? 'avatar--sage' : (${s.index % 3 == 2} ? 'avatar--sky')">🩺</div>
+        <div>
+          <div class="card__title" th:text="${v.firstName + ' ' + v.lastName}">이름</div>
+          <div class="card__sub">수의사</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+</body>
+</html>

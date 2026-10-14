@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head(${pet.name})}"></head>
+<body>
+<header th:replace="~{fragments/layout :: header(${active})}"></header>
+<main class="container">
+  <a class="back" th:href="@{/pets}">← 반려동물 목록</a>
+  <section class="profile">
+    <div class="avatar" th:text="${@viewHelper.emoji(pet.type.name)}">🐾</div>
+    <div>
+      <h1 th:text="${pet.name}">이름</h1>
+      <div class="profile__meta">
+        <span class="chip chip--warm" th:text="${@viewHelper.typeKo(pet.type.name)}">종류</span>
+        <span th:text="${'🎂 ' + #temporals.format(pet.birthDate, 'yyyy.MM.dd') + ' (' + @viewHelper.age(pet.birthDate) + ')'}">생일</span>
+        <a th:href="@{/owners/{id}(id=${pet.owner.id})}" th:text="${'🏠 ' + pet.owner.firstName + ' ' + pet.owner.lastName}">보호자</a>
+      </div>
+    </div>
+  </section>
+  <h2 class="section-title">진료 기록</h2>
+  <div class="timeline" th:if="${!visits.isEmpty()}">
+    <div class="timeline__item" th:each="v : ${visits}">
+      <div class="card">
+        <div class="visit__date" th:text="${#temporals.format(v.date, 'yyyy.MM.dd')}">날짜</div>
+        <div class="visit__desc" th:text="${v.description}">내용</div>
+      </div>
+    </div>
+  </div>
+  <div class="empty" th:if="${visits.isEmpty()}"><span class="empty__icon">🧺</span>아직 진료 기록이 없어요.</div>
+</main>
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+</body>
+</html>

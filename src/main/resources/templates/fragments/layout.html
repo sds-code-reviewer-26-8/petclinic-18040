@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head th:fragment="head(title)">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title th:text="${title} + ' · Petclinic'">Petclinic</title>
+  <meta name="description" content="반려동물 진료 기록을 한눈에 보는 포근한 동물병원 관리 화면">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🐾%3C/text%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" th:href="@{/css/style.css}">
+  <script>
+    (function () {
+      try {
+        var t = localStorage.getItem('theme');
+        if (!t) t = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        document.documentElement.dataset.theme = t;
+      } catch (e) {}
+    })();
+  </script>
+</head>
+<body>
+  <header class="topbar" th:fragment="header(active)">
+    <div class="topbar__inner">
+      <a class="brand" th:href="@{/}" aria-label="Petclinic 홈">
+        <span class="brand__paw" aria-hidden="true">🐾</span>
+        <span class="brand__name">Petclinic</span>
+      </a>
+      <nav class="nav" aria-label="주요 메뉴">
+        <a th:href="@{/}" th:classappend="${active == 'home'} ? 'active'">홈</a>
+        <a th:href="@{/owners}" th:classappend="${active == 'owners'} ? 'active'">보호자</a>
+        <a th:href="@{/pets}" th:classappend="${active == 'pets'} ? 'active'">반려동물</a>
+        <a th:href="@{/vets}" th:classappend="${active == 'vets'} ? 'active'">수의사</a>
+        <a th:href="@{/visits}" th:classappend="${active == 'visits'} ? 'active'">진료 기록</a>
+      </nav>
+      <button class="theme-toggle" id="themeToggle" type="button" aria-label="테마 전환">
+        <span aria-hidden="true"></span>
+      </button>
+    </div>
+  </header>
+
+  <footer class="footer" th:fragment="footer">
+    <span>🐾 오늘도 건강한 하루 되세요</span>
+    <script th:src="@{/js/form-guard.js}"></script>
+    <script>
+      (function () {
+        var btn = document.getElementById('themeToggle');
+        var icon = btn.firstElementChild;
+        var sync = function () {
+          icon.textContent = document.documentElement.dataset.theme === 'dark' ? '☀️' : '🌙';
+        };
+        sync();
+        btn.addEventListener('click', function () {
+          var next = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+          document.documentElement.dataset.theme = next;
+          try { localStorage.setItem('theme', next); } catch (e) {}
+          sync();
+        });
+      })();
+    </script>
+  </footer>
+</body>
+</html>
