@@ -1,0 +1,16 @@
+<!doctype html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('페이지를 찾을 수 없어요')}"></head>
+<body>
+<header th:replace="~{fragments/layout :: header('')}"></header>
+<main class="container">
+  <div class="empty">
+    <span class="empty__icon">🐾</span>
+    <h1>찾으시는 페이지가 없어요</h1>
+    <p>주소가 바뀌었거나 삭제된 정보일 수 있어요.</p>
+    <a class="btn" th:href="@{/}">홈으로 돌아가기</a>
+  </div>
+</main>
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+</body>
+</html>

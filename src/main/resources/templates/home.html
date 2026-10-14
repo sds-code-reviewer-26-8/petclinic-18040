@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('홈')}"></head>
+<body>
+<header th:replace="~{fragments/layout :: header(${active})}"></header>
+<main class="container">
+  <section class="hero">
+    <h1>우리 아이들의 건강,<br>따뜻하게 돌볼게요</h1>
+    <p>보호자 찾기부터 예방접종 대상 확인까지, 동물병원의 하루를 한곳에서 편안하게 살펴보세요.</p>
+    <a class="btn" th:href="@{/pets}">반려동물 만나보기 →</a>
+    <span class="hero__art" aria-hidden="true">🐶</span>
+  </section>
+
+  <div class="stats">
+    <a class="stat" th:href="@{/owners}"><div class="stat__icon">👪</div>
+      <div class="stat__num" th:text="${ownerCount}">0</div><div class="stat__label">보호자</div></a>
+    <a class="stat" th:href="@{/pets}"><div class="stat__icon">🐾</div>
+      <div class="stat__num" th:text="${petCount}">0</div><div class="stat__label">반려동물</div></a>
+    <a class="stat" th:href="@{/vets}"><div class="stat__icon">🩺</div>
+      <div class="stat__num" th:text="${vetCount}">0</div><div class="stat__label">수의사</div></a>
+    <a class="stat" th:href="@{/visits}"><div class="stat__icon">📋</div>
+      <div class="stat__num" th:text="${visitCount}">0</div><div class="stat__label">진료 기록</div></a>
+  </div>
+
+  <h2 class="section-title">바로 해보기</h2>
+  <div class="quick">
+    <form class="card quick__card" th:action="@{/owners}" method="get">
+      <div class="card__head">
+        <div class="avatar avatar--sage">🔎</div>
+        <div>
+          <div class="card__title">보호자 성으로 찾기</div>
+          <div class="card__sub">입력한 글자로 성이 시작하는 보호자</div>
+        </div>
+      </div>
+      <input class="input" type="search" name="lastname" placeholder="예: Da" autocomplete="off" required>
+      <button class="btn" type="submit">검색</button>
+    </form>
+
+    <form class="card quick__card" th:action="@{/pets}" method="get" novalidate
+          data-guard="pet-filter" data-require-both>
+      <div class="card__head">
+        <div class="avatar">💉</div>
+        <div>
+          <div class="card__title">예방접종 대상 찾기</div>
+          <div class="card__sub">오늘 기준 생후 n년 미만 + 종류</div>
+        </div>
+      </div>
+      <div class="quick__row">
+        <input class="input input--narrow" type="number" name="year" min="1" step="1" value="3"
+               aria-label="나이(년)" aria-describedby="home-year-error">
+        <span class="muted">년 미만</span>
+        <select class="input" name="type" aria-label="종류" aria-describedby="home-type-error">
+          <option value="">종류 선택</option>
+          <option th:each="t : ${petTypes}" th:value="${t.name}"
+                  th:text="${@viewHelper.emoji(t.name) + ' ' + @viewHelper.typeKo(t.name)}">🐱 고양이</option>
+        </select>
+      </div>
+      <p class="field-error" id="home-year-error" data-error-for="year" role="alert" hidden></p>
+      <p class="field-error" id="home-type-error" data-error-for="type" role="alert" hidden></p>
+      <button class="btn" type="submit">조회</button>
+    </form>
+  </div>
+
+  <h2 class="section-title">최근 진료</h2>
+  <div class="timeline" th:if="${!recentVisits.isEmpty()}">
+    <div class="timeline__item" th:each="v : ${recentVisits}"><a th:replace="~{fragments/cards :: visit(${v})}"></a></div>
+  </div>
+  <div class="empty" th:if="${recentVisits.isEmpty()}"><span class="empty__icon">🧺</span>아직 진료 기록이 없어요.</div>
+</main>
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+</body>
+</html>

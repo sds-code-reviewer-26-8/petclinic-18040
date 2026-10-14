@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head(${owner.firstName + ' ' + owner.lastName})}"></head>
+<body>
+<header th:replace="~{fragments/layout :: header(${active})}"></header>
+<main class="container">
+  <a class="back" th:href="@{/owners}">← 보호자 목록</a>
+  <section class="profile">
+    <div class="avatar avatar--initial" th:text="${@viewHelper.initial(owner.firstName)}">G</div>
+    <div>
+      <h1 th:text="${owner.firstName + ' ' + owner.lastName}">이름</h1>
+      <div class="profile__meta">
+        <span th:text="${'📍 ' + owner.address + ', ' + owner.city}">주소</span>
+        <span th:text="${'📞 ' + @viewHelper.phone(owner.telephone)}">전화번호</span>
+      </div>
+    </div>
+  </section>
+  <h2 class="section-title">함께하는 반려동물</h2>
+  <div class="grid" th:if="${!pets.isEmpty()}">
+    <th:block th:each="p : ${pets}"><a th:replace="~{fragments/cards :: pet(${p}, false)}"></a></th:block>
+  </div>
+  <div class="empty" th:if="${pets.isEmpty()}"><span class="empty__icon">🧺</span>등록된 반려동물이 없어요.</div>
+</main>
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+</body>
+</html>

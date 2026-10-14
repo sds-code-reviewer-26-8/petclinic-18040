@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('진료 기록')}"></head>
+<body>
+<header th:replace="~{fragments/layout :: header(${active})}"></header>
+<main class="container">
+  <div class="page-head">
+    <h1>진료 기록</h1>
+    <p th:text="${'최근 순으로 ' + visits.size() + '건의 기록이 있어요'}">기록</p>
+  </div>
+  <form class="search" th:action="@{/visits}" method="get" role="search">
+    <input type="search" name="q" th:value="${q}" placeholder="반려동물, 보호자, 내용으로 검색" autocomplete="off">
+  </form>
+  <div class="timeline" th:if="${!visits.isEmpty()}">
+    <div class="timeline__item" th:each="v : ${visits}"><a th:replace="~{fragments/cards :: visit(${v})}"></a></div>
+  </div>
+  <div class="empty" th:if="${visits.isEmpty()}"><span class="empty__icon">🧺</span>검색 결과가 없어요.</div>
+</main>
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+</body>
+</html>
