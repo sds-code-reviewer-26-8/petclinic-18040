@@ -5,8 +5,11 @@ import com.example.petclinic.repository.PetRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
@@ -20,6 +23,14 @@ public class PetService {
 
     public List<Pet> findPets() {
         return petRepository.findAll();
+    }
+
+    public List<Pet> findPetsByYearAndType(Long year, String type) {
+        LocalDateTime dateThreshold = LocalDate.now().minusYears(year).atStartOfDay();
+        return petRepository.findAll().stream()
+                .filter(pet -> pet.getBirthDate().isAfter(dateThreshold)
+                        && pet.getType().getName().equalsIgnoreCase(type))
+                .collect(Collectors.toList());
     }
 
     public Pet findPet(Long petId) {
